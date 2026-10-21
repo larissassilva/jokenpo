@@ -330,8 +330,8 @@
             placarJogador.textContent = vitoriasJogador;
             placarPC.textContent = vitoriasPC;
             placarEmpates.textContent = empates;
-            rodadaAtual.textContent = rodada;
-            progresso.style.width = ((rodada - 1) / TOTAL_RODADAS * 100) + '%';
+            rodadaAtual.textContent = Math.min(rodada, TOTAL_RODADAS);
+            progresso.style.width = ((Math.min(rodada - 1, TOTAL_RODADAS)) / TOTAL_RODADAS * 100) + '%';
         }
 
         // ===== VERIFICA RESULTADO DA RODADA =====
@@ -347,41 +347,36 @@
             return 'derrota';
         }
 
-        // ===== FUNÇÃO PRINCIPAL DO LAÇO FOR =====
-        // 🔁 Aqui está o LAÇO FOR controlando o fluxo das rodadas!
-        // Cada clique no botão avança uma iteração do laço.
+        // ===== EXECUTA UMA RODADA =====
         function jogarRodada(escolhaJogador) {
             if (!jogoAtivo) return;
 
-            // Loop for — processa a rodada atual
-            for (let i = rodada; i <= rodada; i++) {
-                // Computador escolhe
-                const escolhaPC = opcoes[Math.floor(Math.random() * opcoes.length)];
+            // Computador escolhe
+            const escolhaPC = opcoes[Math.floor(Math.random() * opcoes.length)];
 
-                // Mostra as escolhas
-                emojiJogador.textContent = emojis[escolhaJogador];
-                emojiPC.textContent = emojis[escolhaPC];
+            // Mostra as escolhas
+            emojiJogador.textContent = emojis[escolhaJogador];
+            emojiPC.textContent = emojis[escolhaPC];
 
-                // Verifica quem ganhou
-                const resultado = verificarResultado(escolhaJogador, escolhaPC);
+            // Verifica quem ganhou
+            const resultado = verificarResultado(escolhaJogador, escolhaPC);
 
-                if (resultado === 'vitoria') {
-                    vitoriasJogador++;
-                    mensagem.textContent = `✅ Você ganhou! ${escolhaJogador} vence ${escolhaPC}.`;
-                    mensagem.className = 'mensagem msg-vitoria';
-                } else if (resultado === 'derrota') {
-                    vitoriasPC++;
-                    mensagem.textContent = `❌ Você perdeu! ${escolhaPC} vence ${escolhaJogador}.`;
-                    mensagem.className = 'mensagem msg-derrota';
-                } else {
-                    empates++;
-                    mensagem.textContent = `🤝 Empate! Ambos escolheram ${escolhaJogador}.`;
-                    mensagem.className = 'mensagem msg-empate';
-                }
-
-                // Avança contador de rodada (equivalente ao rodada++ do for clássico)
-                rodada++;
+            if (resultado === 'vitoria') {
+                vitoriasJogador++;
+                mensagem.textContent = `✅ Você ganhou! ${escolhaJogador} vence ${escolhaPC}.`;
+                mensagem.className = 'msg-vitoria';
+            } else if (resultado === 'derrota') {
+                vitoriasPC++;
+                mensagem.textContent = `❌ Você perdeu! ${escolhaPC} vence ${escolhaJogador}.`;
+                mensagem.className = 'msg-derrota';
+            } else {
+                empates++;
+                mensagem.textContent = `🤝 Empate! Ambos escolheram ${escolhaJogador}.`;
+                mensagem.className = 'msg-empate';
             }
+
+            // Avança contador de rodada
+            rodada++;
 
             // Atualiza placar e barra
             atualizarPlacar();
@@ -402,13 +397,13 @@
             let textoFinal = '';
             if (vitoriasJogador > vitoriasPC) {
                 textoFinal = `🏆 PARABÉNS! Você venceu o jogo por ${vitoriasJogador} a ${vitoriasPC}!`;
-                mensagem.className = 'mensagem msg-vitoria';
+                mensagem.className = 'msg-vitoria';
             } else if (vitoriasJogador < vitoriasPC) {
                 textoFinal = `😢 O computador venceu por ${vitoriasPC} a ${vitoriasJogador}. Tente novamente!`;
-                mensagem.className = 'mensagem msg-derrota';
+                mensagem.className = 'msg-derrota';
             } else {
                 textoFinal = `🤝 Empate geral! Placar: ${vitoriasJogador} x ${vitoriasPC}.`;
-                mensagem.className = 'mensagem msg-empate';
+                mensagem.className = 'msg-empate';
             }
             mensagem.textContent = textoFinal;
         }
